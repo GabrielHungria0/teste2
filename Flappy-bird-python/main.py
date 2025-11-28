@@ -13,6 +13,7 @@ from patterns.factory import PipeFactory
 from patterns.state import MenuState
 
 
+
 class GameContext:
     """Contexto que gerencia o estado atual do jogo"""
     
@@ -24,7 +25,7 @@ class GameContext:
         self.event_system.attach(self.score_observer)
         self.event_system.attach(self.sound_observer)
         
-        # Facade de recursos
+        # Facade de recursos (carrega UMA vez)
         self.resource_facade = ResourceFacade()
         
         # Factory de obstáculos
@@ -41,12 +42,12 @@ class GameContext:
         
         self.ground_group = pygame.sprite.Group()
         for i in range(2):
-            ground = Ground(GROUND_WIDHT * i)
+            ground = Ground(GROUND_WIDHT * i, self.resource_facade)
             self.ground_group.add(ground)
         
         self.pipe_group = pygame.sprite.Group()
         for i in range(2):
-            pipes = self.obstacle_factory.create_obstacle(SCREEN_WIDHT * i + 800)
+            pipes = self.obstacle_factory.create_obstacle(SCREEN_WIDHT * i + 800, self.resource_facade)
             self.pipe_group.add(pipes[0])
             self.pipe_group.add(pipes[1])
         
@@ -71,15 +72,24 @@ class GameContext:
     
     def reset_game(self):
         """Reinicia o jogo"""
+        # Reseta pontuação
+        self.event_system.notify("RESET")
+        
+        # Reseta factory para pipes normais
+        self.obstacle_factory = PipeFactory()
+        
+        # Reseta pássaro
         self.bird_group.empty()
         self.bird = Bird(self.resource_facade)
         self.bird_group.add(self.bird)
         
+        # Reseta pipes
         self.pipe_group.empty()
         for i in range(2):
-            pipes = self.obstacle_factory.create_obstacle(SCREEN_WIDHT * i + 800)
+            pipes = self.obstacle_factory.create_obstacle(SCREEN_WIDHT * i + 800, self.resource_facade)
             self.pipe_group.add(pipes[0])
             self.pipe_group.add(pipes[1])
+    
 
 
 def main():
@@ -87,7 +97,7 @@ def main():
     pygame.mixer.init()
     
     screen = pygame.display.set_mode((SCREEN_WIDHT, SCREEN_HEIGHT))
-    pygame.display.set_caption('Flappy Bird - Design Patterns Edition')
+    pygame.display.set_caption('Flappy Bird Da Leila')
     
     game = GameContext()
     clock = pygame.time.Clock()

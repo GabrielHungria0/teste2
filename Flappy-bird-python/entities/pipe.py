@@ -7,10 +7,10 @@ from config import PIPE_WIDHT, PIPE_HEIGHT, SCREEN_HEIGHT, GAME_SPEED
 
 class Pipe(pygame.sprite.Sprite):
     
-    def __init__(self, inverted, xpos, ysize):
+    def __init__(self, inverted, xpos, ysize, resource_facade):
         pygame.sprite.Sprite.__init__(self)
         
-        self.image = pygame.image.load('assets/sprites/pipe-green.png').convert_alpha()
+        self.image = resource_facade.get_image('pipe')
         self.image = pygame.transform.scale(self.image, (PIPE_WIDHT, PIPE_HEIGHT))
         
         self.rect = self.image.get_rect()

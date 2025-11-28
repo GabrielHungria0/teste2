@@ -1,13 +1,11 @@
-"""
-Padrão OBSERVER - Sistema de eventos do jogo
-"""
+
 from abc import ABC, abstractmethod
 import pygame
 from config import HIT_SOUND, WING_SOUND
 
 
+
 class GameEventObserver(ABC):
-    """Interface para observers de eventos do jogo"""
     
     @abstractmethod
     def update(self, event_type, data=None):
@@ -15,7 +13,6 @@ class GameEventObserver(ABC):
 
 
 class ScoreObserver(GameEventObserver):
-    """Observer que gerencia a pontuação"""
     
     def __init__(self):
         self.score = 0
@@ -23,14 +20,17 @@ class ScoreObserver(GameEventObserver):
     def update(self, event_type, data=None):
         if event_type == "PIPE_PASSED":
             self.score += 1
-            print(f"🎯 Pontuação: {self.score}")
         elif event_type == "GAME_OVER":
-            print(f"💀 Game Over! Pontuação final: {self.score}")
+            print(f"Game Over Pontuação final: {self.score}")
+        elif event_type == "RESET":
             self.score = 0
+            print("Pontuação resetada!")
+    
+    def get_score(self):
+        return self.score
 
 
 class SoundObserver(GameEventObserver):
-    """Observer que gerencia sons do jogo"""
     
     def update(self, event_type, data=None):
         if event_type == "COLLISION":
@@ -42,7 +42,6 @@ class SoundObserver(GameEventObserver):
 
 
 class GameEventSubject:
-    """Subject que notifica observers sobre eventos"""
     
     def __init__(self):
         self._observers = []
@@ -56,4 +55,3 @@ class GameEventSubject:
     def notify(self, event_type, data=None):
         for observer in self._observers:
             observer.update(event_type, data)
-            
