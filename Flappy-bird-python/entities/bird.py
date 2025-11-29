@@ -1,5 +1,6 @@
 import pygame
 from config import GameConfig
+from patterns.state.bird_state import IdleState, FlyingState, DeadState
 
 
 class Bird(pygame.sprite.Sprite):
@@ -14,6 +15,8 @@ class Bird(pygame.sprite.Sprite):
         self.image = self._images[0]
         self.mask = pygame.mask.from_surface(self.image)
         self.rect = self._create_initial_rect()
+        
+        self._state = IdleState()
     
     def _create_initial_rect(self):
         rect = self.image.get_rect()
@@ -21,10 +24,14 @@ class Bird(pygame.sprite.Sprite):
         rect[1] = self._config.SCREEN_HEIGHT / 2
         return rect
     
+    def set_state(self, state):
+        self._state = state
+    
+    def get_state(self):
+        return self._state
+    
     def update(self):
-        self._update_sprite()
-        self._apply_gravity()
-        self._update_position()
+        self._state.update(self)
     
     def _update_sprite(self):
         self._current_image = (self._current_image + 1) % 3
@@ -37,7 +44,13 @@ class Bird(pygame.sprite.Sprite):
         self.rect[1] += self._speed
     
     def bump(self):
-        self._speed = -self._config.SPEED
+        self._state.bump(self)
+    
+    def die(self):
+        self.set_state(DeadState())
+    
+    def can_collide(self):
+        return self._state.can_collide()
     
     def begin(self):
         self._update_sprite()

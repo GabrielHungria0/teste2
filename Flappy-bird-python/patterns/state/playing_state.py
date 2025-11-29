@@ -76,6 +76,7 @@ class PlayingState(GameState):
             self._handle_collision(game_context)
     
     def _handle_collision(self, game_context):
+        game_context.bird.die()
         game_context.event_system.notify(CollisionEvent())
         game_context.event_system.notify(GameOverEvent())
         time.sleep(1)

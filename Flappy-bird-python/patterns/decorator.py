@@ -26,21 +26,28 @@ class InvincibleBirdDecorator(BirdDecorator):
         super().__init__(bird)
         self._duration = duration
         self._start_time = time.time()
-        self.is_invincible = True
+        self._is_invincible = True
     
     def update(self):
         super().update()
         self._check_invincibility_expired()
+        if self._is_invincible:
+            self._apply_visual_effect()
     
     def _check_invincibility_expired(self):
         if time.time() - self._start_time > self._duration:
-            self.is_invincible = False
-            return self._decorated_bird
-        
-        self._decorated_bird.image.set_alpha(255)
+            self._is_invincible = False
+    
+    def _apply_visual_effect(self):
+        self._decorated_bird.image.set_alpha(200)
+    
+    def can_collide(self):
+        if self._is_invincible:
+            return False
+        return self._decorated_bird.can_collide()
     
     def check_collision(self, sprite_group):
-        if self.is_invincible:
+        if not self.can_collide():
             return False
         
         return pygame.sprite.spritecollide(
