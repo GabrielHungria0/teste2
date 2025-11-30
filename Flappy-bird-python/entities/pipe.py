@@ -36,11 +36,9 @@ class Pipe(pygame.sprite.Sprite):
         return self._config.SCREEN_HEIGHT - ysize
     
     def update(self):
+        """Atualiza a posição horizontal do pipe (movimento)."""
         self._move_horizontal()
-        self._move_vertical()
     
     def _move_horizontal(self):
+        """Move o pipe para a esquerda na velocidade do jogo."""
         self.rect[0] -= self._config.GAME_SPEED
-    
-    def _move_vertical(self):
-        pass

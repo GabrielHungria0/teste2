@@ -6,6 +6,7 @@ from patterns.decorator import InvincibleBirdDecorator
 from game.difficulty import DifficultyManager
 from patterns.event import CollisionEvent, GameOverEvent, JumpEvent, PipePassedEvent
 from patterns.state.game_state import GameState
+from game.managers.hud_renderer import HUDRenderer
 
 
 class PlayingState(GameState):
@@ -13,7 +14,7 @@ class PlayingState(GameState):
         self._config = GameConfig()
         self._difficulty_manager = DifficultyManager()
         self._collision_detector = DecoratorAwareCollisionDetector()
-        self._font = pygame.font.Font(None, 72)
+        self._hud_renderer = HUDRenderer()
     
     def handle_input(self, game_context, event):
         if event.type == pygame.KEYDOWN:
@@ -60,9 +61,8 @@ class PlayingState(GameState):
     
     def _update_difficulty(self, game_context):
         score = game_context.score_observer.get_score()
-        new_factory = self._difficulty_manager.get_factory_for_score(
-            score, game_context.pipe_manager._obstacle_factory
-        )
+        current_factory = game_context.pipe_manager.get_obstacle_factory()
+        new_factory = self._difficulty_manager.get_factory_for_score(score, current_factory)
         game_context.pipe_manager.update_factory(new_factory)
     
     def _check_collisions(self, game_context):
@@ -87,15 +87,6 @@ class PlayingState(GameState):
         game_context.sprite_manager.draw_group("bird", screen)
         game_context.sprite_manager.draw_group("pipes", screen)
         game_context.sprite_manager.draw_group("ground", screen)
-        self._render_score(game_context, screen)
-    
-    def _render_score(self, game_context, screen):
+        
         score = game_context.score_observer.get_score()
-        
-        shadow = self._font.render(str(score), True, (0, 0, 0))
-        shadow_rect = shadow.get_rect(center=(self._config.SCREEN_WIDTH // 2 + 3, 83))
-        screen.blit(shadow, shadow_rect)
-        
-        text = self._font.render(str(score), True, (255, 255, 255))
-        text_rect = text.get_rect(center=(self._config.SCREEN_WIDTH // 2, 80))
-        screen.blit(text, text_rect)
+        self._hud_renderer.render_score(screen, score)

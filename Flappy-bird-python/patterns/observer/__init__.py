@@ -1,5 +1,4 @@
 from .abstract_game_event_observer import AbstractGameEventObserver
 from .game_event_subject import GameEventSubject
-from .null_observer import NullEventObserver
 from .score_observer import ScoreObserver
 from .sound_observer import SoundObserver

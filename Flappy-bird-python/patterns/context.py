@@ -1,24 +1,23 @@
 import pygame
 from config import GameConfig
-from entities.bird import Bird
-from entities.ground import Ground
 from patterns.event import ResetEvent
 from patterns.facade import ResourceFacade
 from patterns.factory import PipeFactory
 from game.managers import PipeManager, GroundManager
 from patterns.observer import GameEventSubject, ScoreObserver, SoundObserver
 from game.managers.sprite_manager import SpriteManager
-from patterns.state.game_over_state import GameOverState
-from patterns.state.menu_state import MenuState
-from patterns.state.playing_state import PlayingState
+from patterns.state.game_state_manager import GameStateManager
+from patterns.initializers import GameInitializer
+
 
 class GameContext:
     def __init__(self):
         self._config = GameConfig()
+        self._initializer = GameInitializer()
         self._initialize_systems()
         self._initialize_resources()
         self._initialize_entities()
-        self._state = MenuState()
+        self._state_manager = GameStateManager()
 
     def _initialize_systems(self):
         self.event_system = GameEventSubject()
@@ -41,49 +40,28 @@ class GameContext:
         self.begin_image = self.resource_facade.get_image("message")
 
     def _initialize_entities(self):
-        self._initialize_bird()
-        self._initialize_ground()
-        self._initialize_pipes()
-
-    def _initialize_bird(self):
-        self.bird = Bird(self.resource_facade)
-        self.sprite_manager.add_to_group("bird", self.bird)
-
-    def _initialize_ground(self):
+        self.bird = self._initializer.initialize_bird(self.sprite_manager, self.resource_facade)
         self.ground_manager = GroundManager(self.sprite_manager)
-        for i in range(2):
-            ground = Ground(self._config.GROUND_WIDTH * i, self.resource_facade)
-            self.sprite_manager.add_to_group("ground", ground)
-
-    def _initialize_pipes(self):
-        obstacle_factory = PipeFactory()
-        self.pipe_manager = PipeManager(self.sprite_manager, obstacle_factory)
-        for i in range(2):
-            self.pipe_manager.add_pair(
-                self._config.SCREEN_WIDTH * i + 800,
-                self.resource_facade
-            )
-
-    def _set_state(self, state):
-        self._state = state
+        self._initializer.initialize_ground(self.sprite_manager, self.resource_facade)
+        self.pipe_manager = self._initializer.initialize_pipes(self.sprite_manager, self.resource_facade)
 
     def handle_input(self, event):
-        self._state.handle_input(self, event)
+        self._state_manager.handle_input(self, event)
 
     def update(self):
-        self._state.update(self)
+        self._state_manager.update(self)
 
     def render(self, screen):
-        self._state.render(self, screen)
+        self._state_manager.render(self, screen)
 
     def play(self):
-        self._set_state(PlayingState())
+        self._state_manager.transition_to_playing()
 
     def game_over(self):
-        self._set_state(GameOverState())
+        self._state_manager.transition_to_game_over()
 
     def set_menu(self):
-        self._set_state(MenuState())
+        self._state_manager.transition_to_menu()
 
     def reset_game(self):
         self.event_system.notify(ResetEvent())
@@ -92,15 +70,8 @@ class GameContext:
 
     def _reset_bird(self):
         self.sprite_manager.clear_group("bird")
-        self.bird = Bird(self.resource_facade)
-        self.sprite_manager.add_to_group("bird", self.bird)
+        self.bird = self._initializer.initialize_bird(self.sprite_manager, self.resource_facade)
 
     def _reset_pipes(self):
         self.sprite_manager.clear_group("pipes")
-        self.pipe_manager = PipeManager(self.sprite_manager, PipeFactory())
-        self.pipe_manager.reset()
-        for i in range(2):
-            self.pipe_manager.add_pair(
-                self._config.SCREEN_WIDTH * i + 800,
-                self.resource_facade
-            )
+        self.pipe_manager = self._initializer.initialize_pipes(self.sprite_manager, self.resource_facade)

@@ -1,11 +1,19 @@
+import pygame
 from typing import Dict
-from patterns.loader.sound import SoundAsset
+
 
 class SoundService:
+    """Gerencia reprodução de sons do jogo com suporte a cache."""
     def __init__(self):
-        self._sounds: Dict[str, SoundAsset] = {}
+        self._sounds: Dict[str, pygame.mixer.Sound] = {}
         
-    def play(self, sound_asset: SoundAsset, tag: str):
-        if tag not in self._sounds:
-            self._sounds[tag] = sound_asset
-        self._sounds[tag].play()
+    def play(self, sound: pygame.mixer.Sound, tag: str = None):
+        """Reproduz um som já carregado.
+        
+        Args:
+            sound: Som pygame.mixer.Sound já carregado
+            tag: Identificador opcional para armazenar em cache
+        """
+        if tag:
+            self._sounds[tag] = sound
+        sound.play()
