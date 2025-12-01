@@ -23,17 +23,31 @@ class ObstacleFactory(ABC):
     def _assign_pair_id(self, pipes, pair_id):
         for pipe in pipes:
             pipe.pair_id = pair_id
+    
+    def _create_pipe_pair(self, xpos, size, gap, resource_facade, pipe_class=Pipe):
+        """Cria um par de pipes (bottom e top) com pair_id atribuído.
+        
+        Args:
+            xpos: Posição horizontal
+            size: Tamanho do espaço do pipe inferior
+            gap: Espaço entre pipe superior e inferior
+            resource_facade: Facade de recursos
+            pipe_class: Classe de pipe a usar (Pipe ou MovingPipe)
+            
+        Returns:
+            List[Pipe]: Pair de pipes [bottom, top]
+        """
+        pipe_bottom = pipe_class(False, xpos, size, resource_facade)
+        pipe_top = pipe_class(True, xpos, self._config.SCREEN_HEIGHT - size - gap, resource_facade)
+        
+        pair_id = self._create_pipe_pair_id()
+        self._assign_pair_id([pipe_bottom, pipe_top], pair_id)
+        
+        return [pipe_bottom, pipe_top]
 
 
 class PipeFactory(ObstacleFactory):
     def create_obstacle(self, xpos, resource_facade) -> List[Pipe]:
         size = self._generate_random_size()
         gap = self._config.PIPE_GAP
-        
-        pipe_bottom = Pipe(False, xpos, size, resource_facade)
-        pipe_top = Pipe(True, xpos, self._config.SCREEN_HEIGHT - size - gap, resource_facade)
-        
-        pair_id = self._create_pipe_pair_id()
-        self._assign_pair_id([pipe_bottom, pipe_top], pair_id)
-        
-        return [pipe_bottom, pipe_top]
+        return self._create_pipe_pair(xpos, size, gap, resource_facade)

@@ -12,6 +12,11 @@ class MovingPipe(Pipe):
         self._movement_direction = 1
         self._initial_y = self.rect[1]
     
+    def update(self):
+        """Atualiza posição horizontal e vertical do pipe."""
+        self._move_horizontal()
+        self._move_vertical()
+    
     def _move_vertical(self):
         self._update_movement_offset()
         self._apply_vertical_position()

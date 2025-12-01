@@ -4,6 +4,8 @@ from entities.bird import Bird
 from entities.ground import Ground
 from patterns.factory import PipeFactory
 from game.managers import PipeManager
+from game.managers.hud_renderer import HUDRenderer
+from game.managers.collision_manager import CollisionManager
 
 
 class GameInitializer:
@@ -36,3 +38,11 @@ class GameInitializer:
             )
         
         return pipe_manager
+    
+    def create_hud_renderer(self):
+        """Cria a renderizadora de HUD."""
+        return HUDRenderer()
+    
+    def create_collision_manager(self):
+        """Cria o gerenciador de colisões."""
+        return CollisionManager()
