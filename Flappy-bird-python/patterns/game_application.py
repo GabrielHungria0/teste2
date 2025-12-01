@@ -29,7 +29,7 @@ class GameApplication:
         pygame.quit()
     
     def _process_frame(self):
-        self._clock.tick(15)
+        self._clock.tick(20)
         
         if not self._handle_events():
             return False

@@ -1,1 +1,1 @@
-from .sprite_manager import SpriteManager
+from .managers.sprite_manager import SpriteManager

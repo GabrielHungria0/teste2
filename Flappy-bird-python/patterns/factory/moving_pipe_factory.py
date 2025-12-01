@@ -14,18 +14,8 @@ class MovingPipeFactory(ObstacleFactory):
         size = self._generate_random_size()
         gap = self._config.PIPE_GAP
         
-        pipe_bottom = self._create_moving_pipe(False, xpos, size, resource_facade)
-        pipe_top = self._create_moving_pipe(
-            True, xpos, self._config.SCREEN_HEIGHT - size - gap, resource_facade
-        )
+        # Cria uma classe wrapper que injeta parâmetros de movimento
+        def create_moving_pipe(*args, **kwargs):
+            return MovingPipe(*args, self._movement_range, self._movement_speed, **kwargs)
         
-        pair_id = self._create_pipe_pair_id()
-        self._assign_pair_id([pipe_bottom, pipe_top], pair_id)
-        
-        return [pipe_bottom, pipe_top]
-    
-    def _create_moving_pipe(self, inverted, xpos, ysize, resource_facade):
-        return MovingPipe(
-            inverted, xpos, ysize, resource_facade,
-            self._movement_range, self._movement_speed
-        )
+        return self._create_pipe_pair(xpos, size, gap, resource_facade, create_moving_pipe)

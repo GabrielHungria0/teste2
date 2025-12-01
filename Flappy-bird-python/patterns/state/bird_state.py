@@ -20,26 +20,9 @@ class FlyingState(BirdState):
         bird._update_sprite()
         bird._apply_gravity()
         bird._update_position()
-        
-        if bird._speed > bird._config.GRAVITY * 3:
-            bird.set_state(FallingState())
     
     def bump(self, bird):
         bird._speed = -bird._config.SPEED
-    
-    def can_collide(self):
-        return True
-
-
-class FallingState(BirdState):
-    def update(self, bird):
-        bird._update_sprite()
-        bird._apply_gravity()
-        bird._update_position()
-    
-    def bump(self, bird):
-        bird._speed = -bird._config.SPEED
-        bird.set_state(FlyingState())
     
     def can_collide(self):
         return True
