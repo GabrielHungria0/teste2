@@ -1,7 +1,9 @@
 import pygame
 from config import GameConfig
-from patterns.state.bird_state import IdleState, FlyingState, DeadState
-
+# --- CORREÇÃO DA IMPORTAÇÃO ---
+from patterns.state.bird.idle_state import IdleState
+from patterns.state.bird.dead_state import DeadState
+# ------------------------------
 
 class Bird(pygame.sprite.Sprite):
     def __init__(self, resource_facade):
