@@ -1,11 +1,11 @@
 import pygame
 from config import GameConfig
 from patterns.event import ResetEvent
-from patterns.initialization import GameInitializer, GameInitializationService
+from initialization import GameInitializer, GameInitializationService
 from patterns.state.game_state_manager import GameStateManager
 
 
-class GameContext:
+class GameFaceit:
     """
     Orquestrador centralizado do jogo (Facade).
     Fornece acesso unificado a subsistemas, mas delega inicialização.

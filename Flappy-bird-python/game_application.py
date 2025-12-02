@@ -1,7 +1,7 @@
 import pygame
 from pygame.locals import QUIT
 from config import GameConfig
-from patterns.context import GameContext
+from patterns.faceit.game_faceit import GameFaceit
 
 
 class GameApplication:
@@ -9,7 +9,7 @@ class GameApplication:
         self._config = GameConfig()
         self._initialize_pygame()
         self._setup_display()
-        self._game_context = GameContext()
+        self._game_context = GameFaceit()
         self._clock = pygame.time.Clock()
     
     def _initialize_pygame(self):

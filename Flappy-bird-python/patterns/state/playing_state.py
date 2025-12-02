@@ -1,7 +1,7 @@
 import pygame
 from patterns.state.game_state import GameState
-from patterns.service.input_handler import InputHandler
-from patterns.service.gameplay_service import GameplayService
+from service.input_handler import InputHandler
+from service.gameplay_service import GameplayService
 
 
 class PlayingState(GameState):

@@ -1,5 +1,5 @@
 """Gerenciador centralizado de transições de estados do jogo."""
-from patterns.state.menu_state import MenuState
+from patterns.state.initial_screen_state import InitialScreenState
 from patterns.state.playing_state import PlayingState
 from patterns.state.game_over_state import GameOverState
 
@@ -9,7 +9,7 @@ class GameStateManager:
     
     def __init__(self):
         """Inicializa o gerenciador com o estado inicial (Menu)."""
-        self._current_state = MenuState()
+        self._current_state = InitialScreenState()
     
     def get_current_state(self):
         """Retorna o estado atual."""
@@ -17,7 +17,7 @@ class GameStateManager:
     
     def transition_to_menu(self):
         """Transiciona para o estado de Menu."""
-        self._current_state = MenuState()
+        self._current_state = InitialScreenState()
     
     def transition_to_playing(self):
         """Transiciona para o estado de Playing (jogo em andamento)."""

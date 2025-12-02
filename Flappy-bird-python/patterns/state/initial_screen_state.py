@@ -3,7 +3,7 @@ from patterns.event import JumpEvent
 from patterns.state.game_state import GameState
 
 
-class MenuState(GameState):
+class InitialScreenState(GameState):
     def handle_input(self, game_context, event):
         if event.type == KEYDOWN and self._is_start_key(event.key):
             game_context.event_system.notify(JumpEvent())

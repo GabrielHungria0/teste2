@@ -1,7 +1,7 @@
 # patterns/state/__init__.py
 
 from .game_state import GameState
-from .menu_state import MenuState
+from .initial_screen_state import InitialScreenState
 from .playing_state import PlayingState
 from .game_over_state import GameOverState
 
