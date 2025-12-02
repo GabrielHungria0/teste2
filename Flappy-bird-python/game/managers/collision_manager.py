@@ -27,4 +27,4 @@ class CollisionManager:
         game_context.event_system.notify(CollisionEvent())
         game_context.event_system.notify(GameOverEvent())
         time.sleep(1)
-        game_context.game_over()
+        game_context.state_facade.game_over()
