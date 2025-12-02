@@ -1,67 +1,93 @@
-import pygame
-from config import GameConfig
-from patterns.event import ResetEvent
-from initialization import GameInitializer, GameInitializationService
-from patterns.state.game_state_manager import GameStateManager
+"""Facade principal do jogo - compõe facades especializadas."""
+from patterns.faceit.game_context import GameContext
+from patterns.faceit.game_loop_facade import GameLoopFacade
+from patterns.faceit.game_state_facade import GameStateFacade
+from patterns.faceit.entity_manager_facade import EntityManagerFacade
 
 
 class GameFaceit:
     """
-    Orquestrador centralizado do jogo (Facade).
-    Fornece acesso unificado a subsistemas, mas delega inicialização.
+    Facade principal do jogo (Facade of Facades).
+    Compõe facades especializadas e fornece interface unificada.
+    
+    Responsabilidades:
+    - Criar e compor as facades especializadas
+    - Delegar operações para as facades apropriadas
+    - Manter compatibilidade com código existente
     """
     
     def __init__(self):
-        self._config = GameConfig()
-        self._initializer = GameInitializer()
-        self._init_service = GameInitializationService(self._config, self._initializer)
+        """Inicializa o contexto e todas as facades especializadas."""
+        # 1. Cria o contexto (auto-inicializa subsistemas)
+        self._context = GameContext()
         
-        # Inicializa todos os subsistemas
-        init_dict = self._init_service.initialize_all()
+        # 2. Cria as facades especializadas
+        self._loop_facade = GameLoopFacade(self._context)
+        self._state_facade = GameStateFacade(self._context)
+        self._entity_facade = EntityManagerFacade(self._context)
         
-        # Expõe subsistemas como atributos públicos
-        for key, value in init_dict.items():
-            setattr(self, key, value)
+        # 3. Injeta facades no contexto como atributos públicos
+        #    Estados podem acessar via game_context.state_facade.play()
+        self._context.state_facade = self._state_facade
+        self._context.entity_facade = self._entity_facade
         
-        # Gerenciador de estado (inicializado após todos os subsistemas)
-        self._state_manager = GameStateManager()
-
+        # 4. Expõe subsistemas para compatibilidade com código existente
+        self._expose_context_attributes()
+    
+    def _expose_context_attributes(self):
+        """
+        Expõe atributos do contexto como atributos públicos.
+        Mantém compatibilidade com código que acessa diretamente os subsistemas.
+        """
+        for key, value in self._context.__dict__.items():
+            if not key.startswith('_'):
+                setattr(self, key, value)
+    
+    # === Game Loop Operations (delega para GameLoopFacade) ===
+    
     def handle_input(self, event):
-        """Delega entrada ao estado atual."""
-        self._state_manager.handle_input(self, event)
-
+        """
+        Processa entrada do usuário.
+        
+        Args:
+            event: Evento pygame a ser processado
+        """
+        self._loop_facade.handle_input(event)
+    
     def update(self):
-        """Delega atualização ao estado atual."""
-        self._state_manager.update(self)
-
+        """Atualiza a lógica do jogo."""
+        self._loop_facade.update()
+    
     def render(self, screen):
-        """Delega renderização ao estado atual."""
-        self._state_manager.render(self, screen)
-
+        """
+        Renderiza o estado atual do jogo.
+        
+        Args:
+            screen: Surface do pygame onde renderizar
+        """
+        self._loop_facade.render(screen)
+    
+    # === State Management (delega para GameStateFacade) ===
+    
     def play(self):
-        """Transiciona para estado de jogo."""
-        self._state_manager.transition_to_playing()
-
+        """Transiciona para o estado de jogo (Playing)."""
+        self._state_facade.play()
+    
     def game_over(self):
-        """Transiciona para estado de game over."""
-        self._state_manager.transition_to_game_over()
-
+        """Transiciona para o estado de game over."""
+        self._state_facade.game_over()
+    
     def set_menu(self):
-        """Transiciona para estado de menu."""
-        self._state_manager.transition_to_menu()
-
+        """Transiciona para o estado de menu inicial."""
+        self._state_facade.set_menu()
+    
+    # === Entity Management (delega para EntityManagerFacade) ===
+    
     def reset_game(self):
-        """Reseta o jogo (event + entidades)."""
-        self.event_system.notify(ResetEvent())
-        self._reset_bird()
-        self._reset_pipes()
-
-    def _reset_bird(self):
-        """Reseta o pássaro à posição inicial."""
-        self.sprite_manager.clear_group("bird")
-        self.bird = self._initializer.initialize_bird(self.sprite_manager, self.resource_facade)
-
-    def _reset_pipes(self):
-        """Reseta os pipes."""
-        self.sprite_manager.clear_group("pipes")
-        self.pipe_manager = self._initializer.initialize_pipes(self.sprite_manager, self.resource_facade)
+        """
+        Reseta o jogo completamente.
+        Recria todas as entidades e atualiza referências expostas.
+        """
+        self._entity_facade.reset_game()
+        # Re-expõe atributos que foram atualizados (bird, pipe_manager)
+        self._expose_context_attributes()
