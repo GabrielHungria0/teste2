@@ -1,7 +1,7 @@
 from typing import List
 from patterns.event import CollisionEvent, Event, JumpEvent
 from patterns.observer.abstract_game_event_observer import AbstractGameEventObserver
-from patterns.service.sound_service import SoundService
+from service.sound_service import SoundService
 
 
 class SoundObserver(AbstractGameEventObserver):

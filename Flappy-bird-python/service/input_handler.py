@@ -1,6 +1,6 @@
 """Serviço para lidar com entrada do jogador durante o jogo."""
 import pygame
-from patterns.decorator import InvincibleBirdDecorator
+from patterns.decorator_.invicible_bird_decorator import InvincibleBirdDecorator
 from patterns.event import JumpEvent
 
 

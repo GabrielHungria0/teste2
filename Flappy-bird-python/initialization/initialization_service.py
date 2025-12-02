@@ -1,7 +1,7 @@
 """Serviço centralizado para inicialização de todos os subsistemas do jogo."""
 import pygame
 from config import GameConfig
-from patterns.facade import ResourceFacade
+from patterns.faceit.resource_facade import ResourceFacade
 from patterns.observer import GameEventSubject, ScoreObserver, SoundObserver
 from game.managers.sprite_manager import SpriteManager
 from game.managers import GroundManager, PipeManager

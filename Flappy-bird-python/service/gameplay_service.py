@@ -1,5 +1,5 @@
 """Serviço para orquestrar lógica central do jogo durante o estado Playing."""
-from game.difficulty import DifficultyManager
+from patterns.chain_of_responsibility.difficulty_manager import DifficultyManager
 from patterns.event import PipePassedEvent
 
 
