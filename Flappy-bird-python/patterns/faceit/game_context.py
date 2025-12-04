@@ -1,6 +1,6 @@
 """Container de dados e subsistemas do jogo."""
 from config import GameConfig
-from initialization import GameInitializer, GameInitializationService
+from initialization import GameInitializer
 from patterns.state.game_state_manager import GameStateManager
 
 
@@ -14,11 +14,10 @@ class GameContext:
     def __init__(self):
         """Inicializa o contexto e todos os subsistemas do jogo."""
         self._config = GameConfig()
-        self._initializer = GameInitializer()
-        self._init_service = GameInitializationService(self._config, self._initializer)
+        self._initializer = GameInitializer(self._config)
         
         # Inicializa todos os subsistemas
-        init_dict = self._init_service.initialize_all()
+        init_dict = self._initializer.initialize_all()
         
         # Expõe subsistemas como atributos públicos
         for key, value in init_dict.items():

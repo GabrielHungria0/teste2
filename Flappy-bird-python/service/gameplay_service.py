@@ -34,7 +34,7 @@ class GameplayService:
         passed_count = game_context.pipe_manager.check_passed_pipes(bird_x)
         
         if passed_count > 0:
-            game_context.event_system.notify(PipePassedEvent(2 * passed_count))
+            game_context.event_system.notify(PipePassedEvent(passed_count))
     
     def _update_difficulty(self, game_context):
         """Ajusta dificuldade (factory de pipes) baseado na pontuação."""

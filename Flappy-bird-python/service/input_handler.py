@@ -1,14 +1,13 @@
 """Serviço para lidar com entrada do jogador durante o jogo."""
 import pygame
-from patterns.decorator_.invicible_bird_decorator import InvincibleBirdDecorator
+from patterns.decorator_.invincible_bird_decorator import InvincibleBirdDecorator
 from patterns.event import JumpEvent
 
 
 class InputHandler:
     """Responsável por processar entrada do jogador e executar ações correspondentes."""
     
-    def __init__(self):
-        self._INVINCIBILITY_DURATION = 3.0
+    INVINCIBILITY_DURATION = 3.0
     
     def handle_input(self, game_context, event):
         """Processa evento de entrada."""
@@ -31,7 +30,7 @@ class InputHandler:
         """Decora o pássaro com invencibilidade temporária."""
         decorated = InvincibleBirdDecorator(
             game_context.bird, 
-            duration=self._INVINCIBILITY_DURATION
+            duration=self.INVINCIBILITY_DURATION
         )
         game_context.bird = decorated
         game_context.sprite_manager.clear_group("bird")

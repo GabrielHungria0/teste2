@@ -1,8 +1,9 @@
-# patterns/state/bird/dead_state.py
-
 from .bird_state_interface import BirdState
 
+
 class DeadState(BirdState):
+    """Estado do pássaro após morrer."""
+    
     def update(self, bird):
         bird._apply_gravity()
         bird._update_position()

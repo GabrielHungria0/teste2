@@ -1,24 +1,19 @@
-
 class BirdDecorator:
     """
     Decorador base para Bird que segue o padrão Decorator.
-    Herda de Bird dinamicamente (lazy import) para evitar circular imports.
+    Permite empilhamento de decorators (decorator stacking).
     """
     def __init__(self, bird):
-        # Obtém a classe Bird dinamicamente para evitar circular import
         from entities.bird import Bird as BirdClass
         
-        # Valida que o bird decorado é uma Bird
-        if not isinstance(bird, BirdClass):
-            raise TypeError(f"bird deve ser uma instância de Bird, recebeu {type(bird)}")
+        if not isinstance(bird, (BirdClass, BirdDecorator)):
+            raise TypeError(f"bird deve ser uma instância de Bird ou BirdDecorator, recebeu {type(bird)}")
         
         self._decorated_bird = bird
-        # Sincroniza atributos pygame.sprite.Sprite
         self.image = bird.image
         self.rect = bird.rect
         self.mask = bird.mask
         self.groups = bird.groups
-        self._Bird = BirdClass
     
     def update(self):
         """Atualiza o bird decorado e sincroniza atributos visuais."""
@@ -39,12 +34,11 @@ class BirdDecorator:
         """Delega bump ao bird decorado."""
         self._decorated_bird.bump()
     
-    def die(self):
-        """Delega die ao bird decorado."""
-        self._decorated_bird.die()
-    
     def can_collide(self):
-        """Retorna se o bird pode colidir."""
+        """
+        Retorna se o bird pode colidir.
+        Decorators podem sobrescrever para modificar comportamento de colisão.
+        """
         return self._decorated_bird.can_collide()
     
     def begin(self):
@@ -55,7 +49,6 @@ class BirdDecorator:
         """Passa chamadas de atributos não definidos para o bird decorado."""
         return getattr(self._decorated_bird, name)
     
-    # Compatibilidade com pygame.sprite
     def __class_getitem__(cls, item):
+        """Compatibilidade com pygame.sprite."""
         return cls
-
