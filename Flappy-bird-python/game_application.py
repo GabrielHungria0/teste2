@@ -20,7 +20,7 @@ class GameApplication:
         self._screen = pygame.display.set_mode(
             (self._config.SCREEN_WIDTH, self._config.SCREEN_HEIGHT)
         )
-        pygame.display.set_caption("Flappy Bird Da Leila")
+        pygame.display.set_caption("Flappy Bird")
     
     def run(self):
         running = True

@@ -30,7 +30,7 @@ class GameContext:
         self._initializer_ref = self._initializer
         
         # Referências para facades (acessíveis pelos estados)
-        self.state_facade = None
+
         self.entity_facade = None
     
     def get_initializer(self):

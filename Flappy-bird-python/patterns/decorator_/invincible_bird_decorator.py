@@ -14,7 +14,7 @@ class InvincibleBirdDecorator(BirdDecorator):
     """
     
     DEFAULT_DURATION = 3.0
-    INVINCIBLE_ALPHA = 200
+    INVINCIBLE_ALPHA = 100
     NORMAL_ALPHA = 255
     
     def __init__(self, bird, duration=None):

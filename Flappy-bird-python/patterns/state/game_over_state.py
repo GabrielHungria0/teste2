@@ -10,7 +10,7 @@ class GameOverState(GameState):
     def handle_input(self, game_context, event):
         if event.type == KEYDOWN and self._is_restart_key(event.key):
             game_context.entity_facade.reset_game()
-            game_context.state_facade.set_menu()
+            game_context.state_manager.transition_to_menu()
     
     def _is_restart_key(self, key):
         return key in (K_SPACE, K_RETURN)

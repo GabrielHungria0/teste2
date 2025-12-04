@@ -1,7 +1,5 @@
 """Facade principal do jogo - compõe facades especializadas."""
 from patterns.faceit.game_context import GameContext
-from patterns.faceit.game_loop_facade import GameLoopFacade
-from patterns.faceit.game_state_facade import GameStateFacade
 from patterns.faceit.entity_manager_facade import EntityManagerFacade
 
 
@@ -22,13 +20,10 @@ class GameFaceit:
         self._context = GameContext()
         
         # 2. Cria as facades especializadas
-        self._loop_facade = GameLoopFacade(self._context)
-        self._state_facade = GameStateFacade(self._context)
         self._entity_facade = EntityManagerFacade(self._context)
         
         # 3. Injeta facades no contexto como atributos públicos
-        #    Estados podem acessar via game_context.state_facade.play()
-        self._context.state_facade = self._state_facade
+        #    Estados podem acessar via game_context.entity_facade
         self._context.entity_facade = self._entity_facade
         
         # 4. Expõe subsistemas para compatibilidade com código existente
@@ -43,7 +38,6 @@ class GameFaceit:
             if not key.startswith('_'):
                 setattr(self, key, value)
     
-    # === Game Loop Operations (delega para GameLoopFacade) ===
     
     def handle_input(self, event):
         """
@@ -52,11 +46,11 @@ class GameFaceit:
         Args:
             event: Evento pygame a ser processado
         """
-        self._loop_facade.handle_input(event)
+        self._context.state_manager.handle_input(self._context, event)
     
     def update(self):
         """Atualiza a lógica do jogo."""
-        self._loop_facade.update()
+        self._context.state_manager.update(self._context)
     
     def render(self, screen):
         """
@@ -65,21 +59,20 @@ class GameFaceit:
         Args:
             screen: Surface do pygame onde renderizar
         """
-        self._loop_facade.render(screen)
+        self._context.state_manager.render(self._context, screen)
     
-    # === State Management (delega para GameStateFacade) ===
     
     def play(self):
         """Transiciona para o estado de jogo (Playing)."""
-        self._state_facade.play()
+        self._context.state_manager.transition_to_playing()
     
     def game_over(self):
         """Transiciona para o estado de game over."""
-        self._state_facade.game_over()
+        self._context.state_manager.transition_to_game_over()
     
     def set_menu(self):
         """Transiciona para o estado de menu inicial."""
-        self._state_facade.set_menu()
+        self._context.state_manager.transition_to_menu()
     
     # === Entity Management (delega para EntityManagerFacade) ===
     

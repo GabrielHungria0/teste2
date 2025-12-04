@@ -32,7 +32,7 @@ class CollisionManager:
         self._kill_bird(game_context.bird)
         self._notify_collision_events(game_context)
         time.sleep(self.GAME_OVER_DELAY)
-        game_context.state_facade.game_over()
+        game_context.state_manager.transition_to_game_over()
     
     def _kill_bird(self, bird):
         """Muda o estado do bird para morto."""
