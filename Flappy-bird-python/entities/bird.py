@@ -1,11 +1,11 @@
 import pygame
 from config import GameConfig
-# --- CORREÇÃO DA IMPORTAÇÃO ---
 from patterns.state.bird.idle_state import IdleState
-from patterns.state.bird.dead_state import DeadState
-# ------------------------------
+
 
 class Bird(pygame.sprite.Sprite):
+    """Classe que representa o pássaro jogável."""
+    
     def __init__(self, resource_facade):
         pygame.sprite.Sprite.__init__(self)
         
@@ -47,9 +47,6 @@ class Bird(pygame.sprite.Sprite):
     
     def bump(self):
         self._state.bump(self)
-    
-    def die(self):
-        self.set_state(DeadState())
     
     def can_collide(self):
         return self._state.can_collide()

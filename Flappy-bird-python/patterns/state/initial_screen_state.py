@@ -4,10 +4,11 @@ from patterns.state.game_state import GameState
 
 
 class InitialScreenState(GameState):
+
     def handle_input(self, game_context, event):
         if event.type == KEYDOWN and self._is_start_key(event.key):
             game_context.event_system.notify(JumpEvent())
-            game_context.state_facade.play()
+            game_context.state_manager.transition_to_playing()
     
     def _is_start_key(self, key):
         return key in (K_SPACE, K_UP)

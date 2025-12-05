@@ -1,8 +1,9 @@
-# patterns/state/bird/flying_state.py
-
 from .bird_state_interface import BirdState
 
+
 class FlyingState(BirdState):
+    """Estado do pássaro durante o voo."""
+    
     def update(self, bird):
         bird._update_sprite()
         bird._apply_gravity()

@@ -25,18 +25,7 @@ class ObstacleFactory(ABC):
             pipe.pair_id = pair_id
     
     def _create_pipe_pair(self, xpos, size, gap, resource_facade, pipe_class=Pipe):
-        """Cria um par de pipes (bottom e top) com pair_id atribuído.
         
-        Args:
-            xpos: Posição horizontal
-            size: Tamanho do espaço do pipe inferior
-            gap: Espaço entre pipe superior e inferior
-            resource_facade: Facade de recursos
-            pipe_class: Classe de pipe a usar (Pipe ou MovingPipe)
-            
-        Returns:
-            List[Pipe]: Pair de pipes [bottom, top]
-        """
         pipe_bottom = pipe_class(False, xpos, size, resource_facade)
         pipe_top = pipe_class(True, xpos, self._config.SCREEN_HEIGHT - size - gap, resource_facade)
         

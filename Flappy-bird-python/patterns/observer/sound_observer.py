@@ -19,8 +19,7 @@ class SoundObserver(AbstractGameEventObserver):
         sound_name = sound_map.get(type(event))
         if sound_name:
             sound = self._resource_facade.get_sound(sound_name)
-            if sound:
-                self._sound_service.play(sound)
+            self._sound_service.play(sound)
                 
     def get_event_types(self) -> List[type]:
         return [CollisionEvent, JumpEvent]
