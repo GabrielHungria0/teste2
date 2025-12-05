@@ -1,7 +1,7 @@
 from typing import List
 from entities.moving_pipe import MovingPipe
 from entities.pipe import Pipe
-from patterns.factory.abstract_factory import ObstacleFactory
+from patterns.factory.factory import ObstacleFactory
 
 
 class MovingPipeFactory(ObstacleFactory):

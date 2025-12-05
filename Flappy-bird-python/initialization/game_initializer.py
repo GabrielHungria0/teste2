@@ -12,16 +12,11 @@ from patterns.observer import GameEventSubject, ScoreObserver, SoundObserver
 
 
 class GameInitializer:
-    """
-    Serviço centralizado responsável pela inicialização de todos os subsistemas e entidades do jogo.
-    Combina a lógica de criação de entidades e orquestração da inicialização.
-    """
-    
+
     def __init__(self, config=None):
         self._config = config or GameConfig()
     
     def initialize_all(self):
-        """Inicializa todos os subsistemas e retorna um dicionário com referências."""
         systems = self._create_systems()
         resources = self._create_resources(systems)
         entities = self._create_entities(systems, resources)
@@ -33,7 +28,6 @@ class GameInitializer:
         }
     
     def _create_systems(self):
-        """Cria event system, observers e sprite manager."""
         event_system = GameEventSubject()
         score_observer = ScoreObserver()
         sprite_manager = SpriteManager()
@@ -48,7 +42,6 @@ class GameInitializer:
         }
     
     def _create_resources(self, systems):
-        """Cria ResourceFacade, observers de som e assets de UI."""
         resource_facade = ResourceFacade()
         sound_observer = SoundObserver(resource_facade)
         systems["event_system"].attach(systems["score_observer"])
@@ -69,7 +62,6 @@ class GameInitializer:
         }
     
     def _create_entities(self, systems, resources):
-        """Cria entidades do jogo: bird, ground, pipes e managers."""
         bird = self.initialize_bird(systems["sprite_manager"], resources["resource_facade"])
         ground_manager = GroundManager(systems["sprite_manager"])
         self.initialize_ground(systems["sprite_manager"], resources["resource_facade"])
@@ -86,19 +78,16 @@ class GameInitializer:
         }
     
     def initialize_bird(self, sprite_manager, resource_facade):
-        """Cria e configura o pássaro."""
         bird = Bird(resource_facade)
         sprite_manager.add_to_group("bird", bird)
         return bird
     
     def initialize_ground(self, sprite_manager, resource_facade):
-        """Cria e configura os blocos de chão iniciais."""
         for i in range(2):
             ground = Ground(self._config.GROUND_WIDTH * i, resource_facade)
             sprite_manager.add_to_group("ground", ground)
     
     def initialize_pipes(self, sprite_manager, resource_facade):
-        """Cria e configura os pipes iniciais com seu gerenciador."""
         obstacle_factory = PipeFactory()
         pipe_manager = PipeManager(sprite_manager, obstacle_factory)
         
@@ -111,9 +100,7 @@ class GameInitializer:
         return pipe_manager
     
     def create_hud_renderer(self):
-        """Cria a renderizadora de HUD."""
         return HUDRenderer()
     
     def create_collision_manager(self):
-        """Cria o gerenciador de colisões."""
         return CollisionManager()

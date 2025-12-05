@@ -1,6 +1,6 @@
 from typing import List
 from entities.pipe import Pipe
-from patterns.factory.abstract_factory import PipeFactory
+from patterns.factory.factory import PipeFactory
 
 class NarrowPipeFactory(PipeFactory):
     def __init__(self, gap_reduction=30):

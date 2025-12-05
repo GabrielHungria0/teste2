@@ -1,7 +1,8 @@
 import pygame
 from pygame.locals import QUIT
 from config import GameConfig
-from patterns.faceit.game_faceit import GameFaceit
+from patterns.faceit.game_context import GameContext
+from patterns.faceit.entity_manager_facade import EntityManagerFacade
 
 
 class GameApplication:
@@ -9,7 +10,11 @@ class GameApplication:
         self._config = GameConfig()
         self._initialize_pygame()
         self._setup_display()
-        self._game_context = GameFaceit()
+        
+        self._game_context = GameContext()
+        self._entity_facade = EntityManagerFacade(self._game_context)
+        self._game_context.entity_facade = self._entity_facade
+        
         self._clock = pygame.time.Clock()
     
     def _initialize_pygame(self):
@@ -34,8 +39,8 @@ class GameApplication:
         if not self._handle_events():
             return False
         
-        self._game_context.update()
-        self._game_context.render(self._screen)
+        self._game_context.state_manager.update(self._game_context)
+        self._game_context.state_manager.render(self._game_context, self._screen)
         pygame.display.update()
         return True
     
@@ -43,5 +48,5 @@ class GameApplication:
         for event in pygame.event.get():
             if event.type == QUIT:
                 return False
-            self._game_context.handle_input(event)
+            self._game_context.state_manager.handle_input(self._game_context, event)
         return True
